@@ -11,12 +11,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val TABLE_NAME = "Names"
         private const val COLUMN_ID = "id"
         private const val COLUMN_NAME = "name"
+        private const val COL_NAME = "name"
+        private const val COL_AGE = "age"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = ("CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_NAME TEXT)")
+        val createTableQuery = "CREATE TABLE $TABLE_NAME " +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "$COL_NAME TEXT, " +
+                "$COL_AGE INTEGER)"
         db.execSQL(createTableQuery)
     }
+
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
@@ -45,6 +51,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return namesList
     }
+
+    fun insertNameAndAge(name: String, age: Int): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(COL_NAME, name)
+        contentValues.put(COL_AGE, age)
+        return db.insert(TABLE_NAME, null, contentValues)
+    }
+
 
 
 }
